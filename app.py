@@ -1,13 +1,14 @@
-from flask import Flask, render_template
+from flask import Flask, render_template,request, redirect, url_for
 
 import sqlite3
 
 #setting up the db
-conn = sqlite3.connect('interns.db')
-cursor = conn.cursor()
+
 
 #create user table
 def create_user_table():
+    conn = sqlite3.connect('interns.db')
+    cursor = conn.cursor()
     cursor.execute('''
                 CREATE TABLE IF NOT EXISTS users
                     (id INTEGER PRIMARY KEY,
@@ -23,6 +24,8 @@ create_user_table()
 
 #select users
 def get_users():
+    conn = sqlite3.connect('interns.db')
+    cursor = conn.cursor()
     cursor.execute("SELECT * FROM users")
     users = cursor.fetchall()
     conn.close()
@@ -41,6 +44,25 @@ def home():
 @app.route("/about")
 def about():
     return render_template("aboutus.html")
+
+#user creation
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        email = request.form.get("email")
+        password = request.form.get("password")
+        #inserting into the db
+        conn = sqlite3.connect('interns.db')
+        conn.execute("INSERT INTO users (email,password) VALUES (?,?)", (email,password))
+        conn.commit()
+        conn.close()
+
+        return redirect(url_for("register"))
+        
+
+    else:
+        return render_template("register.html")
+
 
 if __name__ == "__main__":
     app.run(debug=True)
