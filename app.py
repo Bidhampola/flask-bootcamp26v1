@@ -53,7 +53,8 @@ def register():
         password = request.form.get("password")
         #inserting into the db
         conn = sqlite3.connect('interns.db')
-        conn.execute("INSERT INTO users (email,password) VALUES (?,?)", (email,password))
+        cursor = conn.cursor()
+        cursor.execute("INSERT INTO users (email,password) VALUES (?,?)", (email,password))
         conn.commit()
         conn.close()
 
@@ -62,6 +63,17 @@ def register():
 
     else:
         return render_template("register.html")
+
+#viewing users
+@app.route("/users")
+def view_users():
+    conn = sqlite3.connect('interns.db')
+    conn.row_factory = sqlite3.Row
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM users")
+    users = cursor.fetchall()
+    conn.close()
+    return render_template("users.html", users=users)
 
 
 if __name__ == "__main__":
