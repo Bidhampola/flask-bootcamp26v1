@@ -47,35 +47,26 @@
     </div>
   </div>
 </nav>
-    
 
 <div>
     <div class="row">
         <div class="col-sm-4"></div>
         <div class="col-sm-4">
-            <h1>View Users</h1>
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th scope="col">ID</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Password</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for user in users %}
-                    <tr>
-                        <td>{{ user['id'] }}</td>
-                        <td>{{ user['email'] }}</td>
-                        <td>{{ user['password'] }}</td>
-                        <td>
-                            <a href="/edit/{{ user['id'] }}" class="btn btn-sm btn-primary">Edit</a>
-                            <a href="/delete/{{ user['id'] }}" class="btn btn-sm btn-danger">Delete</a>
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+              <h1>Edit User</h1>
+
+
+<form method="POST" action="/edit/{{ user['id'] }}">
+  <div class="mb-3">
+    <label for="exampleInputEmail1" class="form-label">Email address</label>
+    <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" name="email" value="{{ user['email'] }}">
+  </div>
+  <div class="mb-3">
+    <label for="exampleInputPassword1" class="form-label">Password</label>
+    <input type="password" class="form-control" id="exampleInputPassword1" name="password" value="{{ user['password'] }}">
+  </div>
+  
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
         </div>
         <div class="col-sm-4"></div>
     </div>

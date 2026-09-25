@@ -75,6 +75,39 @@ def view_users():
     conn.close()
     return render_template("users.html", users=users)
 
+#deleting user
+@app.route("/delete/<int:id>")
+def delete_user(id):
+    #deleting the user from the db
+    conn = sqlite3.connect('interns.db')
+    cursor = conn.cursor()
+    cursor.execute("DELETE FROM users WHERE id=?", (id,))
+    conn.commit()
+    conn.close()
+    return redirect(url_for("view_users"))
+
+#edit form
+@app.route("/edit/<int:id>",methods=["GET","POST"])
+def edit(id):
+    if request.method =='GET':
+        conn = sqlite3.connect('interns.db')
+        conn.row_factory = sqlite3.Row
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM users WHERE id=?", (id,))
+        user = cursor.fetchone()
+        conn.close()
+        return render_template("edit_form.html", user=user)
+    
+    elif request.method == 'POST':
+        email = request.form.get("email")
+        password = request.form.get("password")
+        
+        conn = sqlite3.connect('interns.db')
+        cursor = conn.cursor()
+        cursor.execute("UPDATE users SET email=?, password=? WHERE id=?", (email, password, id))
+        conn.commit()
+        conn.close()
+        return redirect(url_for("view_users"))
 
 if __name__ == "__main__":
     app.run(debug=True)
